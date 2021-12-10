@@ -7,14 +7,55 @@ const dbname='task-manager'
 console.log('attempting connection..')
 mongoClient.connect(connectionURL,{'useNewUrlParser':true},(error,client)=>{
     if(error)
-        return console.log('something went wrong')
+        return console.log(error)
     
     console.log('connection successfull!')
     const db=client.db(dbname)
 
-    db.collection('users').insertOne({
+    db.collection('users').insertOne({                              // database users created
         name:'aleron',
         age:21
+    },(error,result)=>{
+        if(error)
+         return console.log('something went wrong')
+
+        console.log(result.ops)
     })
+
+    db.collection('tasks').insertMany([                            // databse tasks created
+        {
+            description:'create connection',
+            status:true
+        },
+        {
+            description:'create database',
+            status:true
+        },
+        {
+            description:'insert 3 documents',
+            status:false
+        }
+    ],(error,result)=>{
+        if(error)
+            return console.log('collection task failed')
+        console.log(result.ops+'\ndocument inserted')
+
+    })
+
+    // db.collection('users').insertMany([
+    //     {
+    //         name:'aayush',
+    //         age:22
+    //     },
+    //     {
+    //         name:'yoyo',
+    //         age:34
+    //     }
+    // ],(error,result)=>{
+    //     if (error)
+    //         return console.log('no doc inserted')
+    //     console.log(result.ops)
+
+    // })
     
 })
