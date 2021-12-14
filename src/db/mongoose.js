@@ -17,8 +17,8 @@ const user=mongoose.model('user',{                                          // c
         required:true,
         trim:true,  
         lowercase:true,
-        validate(value){
-            if(!validator.isEmail(value))
+        validate(value){                                                    // to add external validators that are not prebuilt like 
+            if(!validator.isEmail(value))                                   // to check if input is valid email or not 
                 throw new Error("Not a valid email address")
         }
         
@@ -41,14 +41,14 @@ const user=mongoose.model('user',{                                          // c
     }
 })
 
-const me=new user({
+const me=new user({                                                             // create instace of model to insert in collection
     name:'aayush',
     email:'Aayuspandey@gmail.com',
     password:'password 1234',
     age:'21'
 })
 
-me.save().then((result)=>{
+me.save().then((result)=>{                                                      // insert document/instance to collection
     console.log(result)
 }).catch((error)=>{
     console.log('error',error)
