@@ -8,20 +8,31 @@ mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api',{             //co
 const user=mongoose.model('user',{                                          // created model User
     name:{
 
-        type:String,
+        type:String,                                                        
         trime:true,
         required:true
     },
     email:{
         type:String,
         required:true,
-        trim:true,
+        trim:true,  
         lowercase:true,
         validate(value){
             if(!validator.isEmail(value))
                 throw new Error("Not a valid email address")
         }
         
+    },
+    password:{
+        type:String,
+        require:true,
+        trim:true,
+        minLength:6,
+        validate(value){
+            if(value.toLowerCase().includes('password')){
+                return value.replace('password','aayush')
+            }
+        }
     },
     age:{
         type:Number,
@@ -33,6 +44,7 @@ const user=mongoose.model('user',{                                          // c
 const me=new user({
     name:'aayush',
     email:'Aayuspandey@gmail.com',
+    password:'password 1234',
     age:'21'
 })
 
@@ -45,11 +57,14 @@ me.save().then((result)=>{
 
 // const task=mongoose.model('task',{                                          // created model task
 //     description:{
-//         type:String
+//         type:String,
+//         required:true,
+//         trime:true
 
 //     },
 //     status:{
-//         type:Boolean
+//         type:Boolean,
+//         default:false
 //     }
 // }
 // )
@@ -58,7 +73,6 @@ me.save().then((result)=>{
 
 // const task1=new task({
 //     description:'create task model',
-//     status:false
 // })
 
 // task1.save().then((result)=>{
