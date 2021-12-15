@@ -49,6 +49,29 @@ app.get('/users/:id',(req,res)=>{
 
 })
 
+app.get('/tasks',(req,res)=>{
+    task.find().then((result)=>{
+        if(result.length==0)
+            return res.status(404).send('No task created yet')
+        res.status(302).send(result)
+    }).catch((error)=>{
+        res.status(500).send(error)
+    })
+})
+
+app.get('/tasks/:id',(req,res)=>{
+    const id=req.params.id
+
+    task.findById(id).then((result)=>{
+        if(result==undefined)
+            return res.status(404).send("No task found")
+        res.status(302).send(result)
+    }).catch((error)=>{
+        res.send(error)
+    })
+
+})
+
 app.listen(port,()=>{
     console.log('server listerning on port',port)
 })
