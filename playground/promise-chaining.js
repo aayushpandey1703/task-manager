@@ -4,16 +4,16 @@ const task=require('../src/models/task')
 
 // 61b9e24da23c6aace9cb5b7c (use promise chaining)
 
-// user.findByIdAndUpdate('61b9e24da23c6aace9cb5b7c',{
-//         name:'Aayush'
-// }).then((result)=>{
-//     console.log(result)
-//     return user.countDocuments({name:'aleron'})
-// }).then((result)=>{
-//     console.log(result)
-// }).catch((e)=>{
-//     console.log(e)
-// })
+user.findByIdAndUpdate('61b9e24da23c6aace9cb5b7c',{
+        name:'Aayush'
+}).then((result)=>{
+    console.log(result)
+    return user.countDocuments({name:'aleron'})
+}).then((result)=>{
+    console.log(result)
+}).catch((e)=>{
+    console.log(e)
+})
 
 // user.countDocuments({age:0}).then((result)=>{
 //     console.log(result)
@@ -33,11 +33,11 @@ const task=require('../src/models/task')
 
 // challenge
 
-task.findByIdAndDelete('61bc75c739909502330f206a').then((result)=>{
-    console.log(result)
-    return task.countDocuments({status:false})
-}).then((result)=>{
-    console.log(result)
-}).catch((e)=>{
-    console.log(e)
-})
+// task.findByIdAndDelete('61bc75c739909502330f206a').then((result)=>{
+//     console.log(result)
+//     return task.countDocuments({status:false})
+// }).then((result)=>{
+//     console.log(result)
+// }).catch((e)=>{
+//     console.log(e)
+// })
