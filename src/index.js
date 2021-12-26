@@ -5,8 +5,8 @@ const taskRouter=require('./routers/task')
 
 const app=express()
 const port=process.env.PORT || 3000
-app.use(express.json())                                             // parse json client request into object
 
+app.use(express.json())                                             // parse json client request into object
 app.use(userRouter)                                                 // register route with express to use all user endpoints
 app.use(taskRouter)
 
