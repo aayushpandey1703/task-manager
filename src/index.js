@@ -188,3 +188,13 @@ app.listen(port,()=>{
     console.log('server listerning on port',port)
 })
   
+const bcrypt=require('bcryptjs')
+
+const myfunction=async ()=>{
+    const s='aayush'
+    const hashedPassword=await bcrypt.hash(s,8)
+    const isMatch=await bcrypt.compare('aayush',hashedPassword)
+    console.log(isMatch)
+ 
+}
+myfunction()

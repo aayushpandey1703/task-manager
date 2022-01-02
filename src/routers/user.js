@@ -1,7 +1,5 @@
 const express=require('express')
-const { model } = require('mongoose')
-const users=require('../models/users')
-
+const users=require('../models/users')  
 const Route=new express.Router()
 
 
@@ -27,6 +25,18 @@ Route.post('/users',async (req,res)=>{
 
 })
 
+Route.post('/user/login',async (req,res)=>{
+    try{
+    const user=await users.findByCredentials(req.body.email,req.body.password)
+    res.send(user)
+    }
+    catch(e)
+        {
+            res.status(500).send(e)
+        }
+        
+})
+
 Route.get('/users',async (req,res)=>{
 
     try{
@@ -49,8 +59,10 @@ Route.get('/users/:id',async (req,res)=>{
     const id=req.params.id
 
     try{
+        
         const user=await users.findById(id)
         res.send(user)
+
     }
     catch(e){
         res.status(500).send(e)
@@ -79,14 +91,20 @@ Route.patch("/user/:id",async (req,res)=>{
     
     // if valid updates then proceed with update process
     try{
-        const user=await users.findByIdAndUpdate(req.params.id,req.body,{new:true,runValidators:true})
-
+        const user=await users.findById(req.params.id)
         if(!user)
             return res.status(404).send({error:'No user with id found'})
+
+        updates.forEach((ele)=>{
+            user[ele]=req.body[ele]
+        })
+        await user.save()
+
+       
         res.status(200).send(user)
         
     }catch(e){
-        res.send(400).send(e)
+        res.send(500).send(e)
 
     }
     

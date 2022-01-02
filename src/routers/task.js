@@ -62,11 +62,16 @@ Route.get('/tasks/:id',async (req,res)=>{
 
 })
 Route.patch('/task/:id',async (req,res)=>{
-    
+    const update=Object.keys(req.body)
     try{
-        const tasks=await task.findByIdAndUpdate(req.params.id,req.body,{new:true})
-        if(!task)
+        const tasks=await task.findById(req.params.id)
+        if(!tasks)
             return res.status(404).send({error:'task not found'})
+            
+        update.forEach((ele)=>{
+            tasks[ele]=req.body[ele]
+        })
+        await tasks.save()
         res.status(200).send(tasks)
 
     }catch(e){
