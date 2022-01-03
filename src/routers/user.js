@@ -4,12 +4,13 @@ const Route=new express.Router()
 
 
 Route.post('/users',async (req,res)=>{
-    const first=new users(req.body)       
+    const first=new users(req.body)  
     
     // same response using async-await
     try{
         await first.save()
-        res.send(first)
+        const token=await first.generateAuthToken()
+        res.send({user:first,token:token})
     }
     catch(e){
         res.status(400).send(e)
@@ -28,10 +29,13 @@ Route.post('/users',async (req,res)=>{
 Route.post('/user/login',async (req,res)=>{
     try{
     const user=await users.findByCredentials(req.body.email,req.body.password)
-    res.send(user)
+    const token =await user.generateAuthToken()
+
+    res.send({user:user,token:token})
     }
     catch(e)
         {
+            console.log(e)
             res.status(500).send(e)
         }
         

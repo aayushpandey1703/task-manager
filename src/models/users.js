@@ -1,7 +1,7 @@
 const mongoose=require('mongoose')
 const validator=require('validator')
 const bcrypt=require('bcryptjs')
-
+const jwt=require('jsonwebtoken')
 const userSchema=new mongoose.Schema({                                      
     name:{
 
@@ -36,10 +36,17 @@ const userSchema=new mongoose.Schema({
         type:Number,
         default:0
         
+    },
+    tokens:[{
+        token:{
+            type:String,
+            requried:true
+        }
     }
+    ]
 })
 
-userSchema.statics.findByCredentials=async (email,password)=>{
+userSchema.statics.findByCredentials=async (email,password)=>{      //function for model
     const user = await users.findOne({email:email})
     if(!user)
         throw new Error('No user available')
@@ -48,6 +55,14 @@ userSchema.statics.findByCredentials=async (email,password)=>{
         throw new Error('Unable to login')
     return user
         
+}
+
+userSchema.methods.generateAuthToken=async function(){         // function for model instance to store genrated token to db
+    const userw=this
+    const token=jwt.sign({_id:userw._id.toString()},"newtoken")
+    userw.tokens=userw.tokens.concat({token:token})
+    await userw.save()
+    return token
 }
 
 // Hash plain text password to hashed password

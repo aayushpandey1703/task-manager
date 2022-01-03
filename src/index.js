@@ -188,13 +188,15 @@ app.listen(port,()=>{
     console.log('server listerning on port',port)
 })
   
-const bcrypt=require('bcryptjs')
+// const jwt=require('jsonwebtoken')
 
-const myfunction=async ()=>{
-    const s='aayush'
-    const hashedPassword=await bcrypt.hash(s,8)
-    const isMatch=await bcrypt.compare('aayush',hashedPassword)
-    console.log(isMatch)
+// const myfunction=async ()=>{
+//     const token=jwt.sign({_id:'abc123'},"newtoken",{expiresIn:'7 days'})
+//     console.log(token)
+
+//     const data=jwt.verify(token,'newtoken')
+//     console.log(data)
+// }
+// myfunction()
+
  
-}
-myfunction()
