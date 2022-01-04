@@ -1,5 +1,6 @@
 const express=require('express')
 const users=require('../models/users')  
+const auth=require('../middleware/auth')
 const Route=new express.Router()
 
 
@@ -41,7 +42,7 @@ Route.post('/user/login',async (req,res)=>{
         
 })
 
-Route.get('/users',async (req,res)=>{
+Route.get('/users',auth,async (req,res)=>{
 
     try{
         const user=await users.find()
