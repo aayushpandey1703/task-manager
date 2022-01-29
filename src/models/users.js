@@ -2,11 +2,11 @@ const mongoose=require('mongoose')
 const validator=require('validator')
 const bcrypt=require('bcryptjs')
 const jwt=require('jsonwebtoken')
+
 const userSchema=new mongoose.Schema({                                      
     name:{
-
         type:String,                                                        
-        trime:true,
+        trim:true,
         required:true
     },
     email:{
@@ -18,6 +18,7 @@ const userSchema=new mongoose.Schema({
         validate(value){                                                 
             if(!validator.isEmail(value))                                  
                 throw new Error("Not a valid email address")
+            
         }
         
     }, 
@@ -25,7 +26,7 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:true,
         trim:true,
-        minLength:6,
+        minLength:[6,'password is too short minimum length must be 6'],
         validate(value){
             if(value.toLowerCase().includes('password')){
                 return value.replace('password','aayush')

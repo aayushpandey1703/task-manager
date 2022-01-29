@@ -14,7 +14,10 @@ Route.post('/users',async (req,res)=>{
         res.send({user:first,token:token})
     }
     catch(e){
+        if(e.code==11000)
+            return res.send({error:'email already exists'})
         res.status(400).send(e)
+
     }
 
     // response using promise chaining
