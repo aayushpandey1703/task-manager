@@ -46,17 +46,22 @@ Route.post('/user/login',async (req,res)=>{
 })
 
 Route.get('/users',auth,async (req,res)=>{
-
     try{
-        const user=await users.find()
-        const count=await users.countDocuments()
-        res.send({user:user,docs:count})
+        const user=await users.find({})
+        res.send(user)
+
     }
     catch(e){
-        res.status(500).send(e)
-    }
+        res.status(503).send(e)
 
-    // users.find({}).then((result)=>{
+    }
+})
+
+Route.get('/users/me',auth,async (req,res)=>{               // get profile of only loggedin user using jwt
+
+    res.send(req.user)
+ 
+       // users.find({}).then((result)=>{
     //     res.send(result)
     // }).catch((error)=>{
     //     res.status(500).send(error)
