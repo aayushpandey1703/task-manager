@@ -6,10 +6,10 @@ const Route=new express.Router()
 
 Route.post('/users',async (req,res)=>{
     const first=new users(req.body)  
-    
+   
     // same response using async-await
     try{
-        await first.save()
+    await first.save()                                                  // when save() methos used with model instance it creates new user
         const token=await first.generateAuthToken()
         res.send({user:first,token:token})
     }
@@ -43,6 +43,20 @@ Route.post('/user/login',async (req,res)=>{
             res.status(500).send(e)
         }
         
+})
+
+Route.post('/user/logout',auth, async (req,res)=>{
+    try{
+        req.user.tokens=req.user.tokens.filter((token)=>{
+            return token.token!==req.token
+        })
+        await req.user.save()
+        res.send('user logged out')
+    }
+    catch(e){
+        res.status(501).send({error:e})
+
+    }
 })
 
 Route.get('/users',auth,async (req,res)=>{
@@ -111,7 +125,7 @@ Route.patch("/user/:id",async (req,res)=>{
         updates.forEach((ele)=>{
             user[ele]=req.body[ele]
         })
-        await user.save()
+        await user.save()   // when save() method used with object it updates the existing user
 
        
         res.status(200).send(user)
