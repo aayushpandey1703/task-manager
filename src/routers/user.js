@@ -35,7 +35,7 @@ Route.post('/user/login',async (req,res)=>{
     const user=await users.findByCredentials(req.body.email,req.body.password)
     const token =await user.generateAuthToken()
 
-    res.send({user:user,token:token})
+    res.send({user:user.getPublicData(),token:token})
     }
     catch(e)
         {
@@ -104,7 +104,7 @@ Route.get('/users/:id',async (req,res)=>{
     // })
 
 })
-Route.patch("/user/:id",async (req,res)=>{
+Route.patch("/user",auth,async (req,res)=>{
     // validate update keys from client
     const updates=Object.keys(req.body)
     const allowedUpdates=['name','email','password','age']
@@ -118,7 +118,7 @@ Route.patch("/user/:id",async (req,res)=>{
     
     // if valid updates then proceed with update process
     try{
-        const user=await users.findById(req.params.id)
+        const user=await users.findById(req.user._id)
         if(!user)
             return res.status(404).send({error:'No user with id found'})
 
@@ -136,9 +136,9 @@ Route.patch("/user/:id",async (req,res)=>{
     }
     
 })
-Route.delete('/users/:id',async (req,res)=>{
+Route.delete('/users',auth,async (req,res)=>{
     try{
-        const user=await users.findByIdAndDelete(req.params.id)
+        const user=await users.findByIdAndDelete(req.user._id)
         if(!user)
             return res.status(404).send({error:'user not found'})
         res.send(user)
