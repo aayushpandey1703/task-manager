@@ -6,14 +6,6 @@ const taskRouter=require('./routers/task')
 const app=express()
 const port=process.env.PORT || 3000
 
-//middleware
-
-// without middleware: new request -> run route handler
-// with middleware: new request -> do something -> run route handler
-// app.use((req,res,next)=>{                                           // register middleware
-//     res.status(503).send('site under maintenance')
-// })
-
 
 
 app.use(express.json())                                             // parse json client request into object
