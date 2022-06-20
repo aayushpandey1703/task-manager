@@ -1,5 +1,6 @@
 const express=require('express')
 const users=require('../models/users')  
+const tasks=require('../models/task')
 const auth=require('../middleware/auth')
 const Route=new express.Router()
 
@@ -138,6 +139,7 @@ Route.patch("/user",auth,async (req,res)=>{
 })
 Route.delete('/users',auth,async (req,res)=>{
     try{
+        await tasks.deleteMany({owner:req.user._id})
         const user=await users.findByIdAndDelete(req.user._id)
         if(!user)
             return res.status(404).send({error:'user not found'})

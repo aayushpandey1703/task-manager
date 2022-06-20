@@ -1,14 +1,19 @@
 const express=require('express')
 const task=require('../models/task')
+const users=require('../models/users')
+const auth=require('../middleware/auth')
 
 const Route=new express.Router()
 
 
-Route.post('/tasks',async (req,res)=>{                      //to test post method endpoint use postman Route
+Route.post('/tasks',auth,async (req,res)=>{                      //to test post method endpoint use postman Route
+    req.body.owner=req.user._id
     const firstTask=new task(req.body)
-
+    
     try{
+
         await firstTask.save()
+        const user=await users.findById(req.user._id)
         res.send(firstTask)
     }
     catch(e){
@@ -22,11 +27,12 @@ Route.post('/tasks',async (req,res)=>{                      //to test post metho
     // })
 })
 
-Route.get('/tasks',async (req,res)=>{
+Route.get('/tasks',auth,async (req,res)=>{
 
     try{
-        const tasks=await task.find(null,null,{sort:['description']})
-        res.send(tasks)
+        const user=await users.findById(req.user._id)
+        await user.populate('tasks')
+        res.send(user.tasks)
     }
     catch(e){
         res.status(500).send(e)
@@ -43,13 +49,13 @@ Route.get('/tasks',async (req,res)=>{
 
 Route.get('/tasks/:id',async (req,res)=>{
     const id=req.params.id
-
     try{
         const found=await task.findById(id)
-        res.send(found)
+        await found.populate("owner")           // get user detail with blog id primary-foreign key concept
+        res.send(found.owner)
     }
     catch(e){
-        res.status(404).send(e)
+        res.status(500).send(e)
     }
 
     // task.findById(id).then((result)=>{
@@ -61,10 +67,11 @@ Route.get('/tasks/:id',async (req,res)=>{
     // })
 
 })
-Route.patch('/task/:id',async (req,res)=>{
+Route.patch('/task/:id',auth,async (req,res)=>{
     const update=Object.keys(req.body)
+    const id=req.params.id
     try{
-        const tasks=await task.findById(req.params.id)
+        const tasks=await task.findOne({_id:id,owner:req.user._id})
         if(!tasks)
             return res.status(404).send({error:'task not found'})
             
@@ -76,6 +83,17 @@ Route.patch('/task/:id',async (req,res)=>{
 
     }catch(e){
         res.status(400).send(e)
+    }
+})
+
+Route.delete('/task/delete/:id',auth,async (req,res)=>{
+    try{
+        const id=req.params.id
+        const deleteTask=await task.findOneAndDelete({_id:id,owner:req.user._id})
+        res.status(200).send(deleteTask)
+    }
+    catch(e){
+        res.send(500).send({error:e})
     }
 })
 

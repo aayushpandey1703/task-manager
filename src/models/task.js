@@ -8,6 +8,11 @@ const task=mongoose.model('task',{                                          // c
         minlength:2
 
     },
+    owner:{
+        type:mongoose.Schema.Types.ObjectId,
+        required:true,
+        ref:"users"
+    },
     status:{
         type:Boolean,
         default:false

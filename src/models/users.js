@@ -38,6 +38,7 @@ const userSchema=new mongoose.Schema({
         default:0
         
     },
+  
     tokens:[{
         token:{
             type:String,
@@ -45,6 +46,13 @@ const userSchema=new mongoose.Schema({
         }
     }
     ]
+})
+
+userSchema.virtual('tasks',{            //create virtual field for user model to establish relationship b/w task and users
+
+    ref:'task',
+    localField:'_id',
+    foreignField:'owner'
 })
 
 userSchema.statics.findByCredentials=async (email,password)=>{      //function for model
