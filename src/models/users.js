@@ -46,7 +46,7 @@ const userSchema=new mongoose.Schema({
         }
     }
     ]
-})
+},{timestamps:{createdAt:'created_at',updatedAt:'updated_at'}})
 
 userSchema.virtual('tasks',{            //create virtual field for user model to establish relationship b/w task and users
 

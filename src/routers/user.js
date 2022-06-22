@@ -63,7 +63,7 @@ Route.post('/user/logout',auth, async (req,res)=>{
 
 Route.get('/users',auth,async (req,res)=>{
     try{
-        const user=await users.find({})
+        const user=await users.find({}).sort({"updated_at":-1})
         res.send(user)
 
     }
