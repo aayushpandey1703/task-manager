@@ -1,6 +1,6 @@
 const mongoose=require('mongoose')
 
-const task=mongoose.model('task',{                                          // created model task
+const taskSchema=new mongoose.Schema({                                          // created model task
     description:{
         type:String,
         required:true,
@@ -17,6 +17,8 @@ const task=mongoose.model('task',{                                          // c
         type:Boolean,
         default:false
     }
-})
+},{timestamps:{createdAt:"created_at",updatedAt:"updated_at"}})
+
+const task=mongoose.model('task',taskSchema)
 
 module.exports=task

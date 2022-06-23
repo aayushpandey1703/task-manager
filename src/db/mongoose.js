@@ -5,6 +5,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api',{             //co
     useNewUrlParser:true,
 })
 
+console.log("db connected")
+
 // const user=mongoose.model('user',{                                          // created model User
 //     name:{
 

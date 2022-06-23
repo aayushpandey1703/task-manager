@@ -27,15 +27,38 @@ Route.post('/tasks',auth,async (req,res)=>{                      //to test post 
     // })
 })
 
+//example of filtering, pagination and sorting
+//GET /tasks?limit=2&skip=1 [pagination]
+//GET /tasks?completed=true [filtering]
+//GET /tasks?sort=created_at
+
 Route.get('/tasks',auth,async (req,res)=>{
 
     try{
+        const match={}
+        if(req.query.completed!=undefined)    
+            match.status=req.query.completed
+
+        const sort={}
+        sort[req.query.sort]=-1
+        
+
         const user=await users.findById(req.user._id)
-        await user.populate('tasks')
+
+        await user.populate({
+            path:'tasks',
+            match:match,                                        // filtering
+            options:{                                           // pagination and sorting
+                limit:parseInt(req.query.limit),
+                skip:parseInt(req.query.skip),
+                sort:sort
+            }
+        })
+
         res.send(user.tasks)
     }
     catch(e){
-        res.status(500).send(e)
+        res.status(500).send({error:e})
     }
 
     // task.find().then((result)=>{
