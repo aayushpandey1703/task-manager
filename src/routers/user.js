@@ -2,6 +2,18 @@ const express=require('express')
 const users=require('../models/users')  
 const tasks=require('../models/task')
 const auth=require('../middleware/auth')
+const multer=require('multer')          // for uploading files
+const upload = multer({
+    limits:{
+        fileSize: 1000000
+    },
+    fileFilter(req,file,cb){                                // check file type
+        if(!file.originalname.match(/(\.jpg|\.jpeg|\.png)/)) // using regex to match file extension use online regex compiler
+            return cb(new Error("image not supported"))         // send error if not error
+        cb(undefined,true)                                  // else accept
+    }
+
+})
 
 const Route=new express.Router()
 
@@ -75,7 +87,7 @@ Route.get('/users',auth,async (req,res)=>{
 
 Route.get('/users/me',auth,async (req,res)=>{               // get profile of only loggedin user using jwt
 
-    res.send(req.user)
+    res.send(req.user._id+"\n"+req.user.name)
  
        // users.find({}).then((result)=>{
     //     res.send(result)
@@ -152,4 +164,32 @@ Route.delete('/users',auth,async (req,res)=>{
     }
 })
 
+// USER IMAGE ROUTES
+
+Route.get("/user/avatar/:id",async (req,res)=>{
+    const user=await users.findById(req.params.id)
+    res.set("Content-Type","image/jpg")
+    res.send(user.avatar)
+})
+
+Route.post("/users/me/avatar",auth,upload.single('avatar') /* 'avatar' parameter and form-data key at client side must be same */, async (req,res)=>{
+    req.user.avatar=req.file.buffer
+    await req.user.save()
+    res.send("file uploaded")
+},(err,req,res,next)=>{
+    res.status(400).send({error:err.message})           // handle multer error to get JSON response
+})
+
+Route.delete("/users/me/avatar",auth,async (req,res)=>{
+try
+    {    req.user.avatar=undefined
+    await req.user.save()
+    res.send("profile pic deleted")
+}
+catch(e){
+    res.status(500).send({error:e})
+}
+})
+
 module.exports=Route
+

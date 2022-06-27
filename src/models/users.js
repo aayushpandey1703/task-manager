@@ -38,6 +38,9 @@ const userSchema=new mongoose.Schema({
         default:0
         
     },
+    avatar:{
+        type:Buffer
+    },
   
     tokens:[{
         token:{
