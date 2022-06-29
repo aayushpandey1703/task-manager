@@ -58,6 +58,18 @@ userSchema.virtual('tasks',{            //create virtual field for user model to
     foreignField:'owner'
 })
 
+userSchema.methods.JSON=function(){
+    const user=this
+    const userObject=user.toObject()
+
+    if(!userObject.avatar)
+        userObject.avatar=false
+    else
+        userObject.avatar=true
+
+    return userObject
+}
+
 userSchema.statics.findByCredentials=async (email,password)=>{      //function for model
     const user = await users.findOne({email:email})
     if(!user)

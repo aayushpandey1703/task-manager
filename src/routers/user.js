@@ -2,10 +2,13 @@ const express=require('express')
 const users=require('../models/users')  
 const tasks=require('../models/task')
 const auth=require('../middleware/auth')
+// image packages
 const multer=require('multer')          // for uploading files
+const sharp=require('sharp')          // for formatting images
+
 const upload = multer({
     limits:{
-        fileSize: 1000000
+        fileSize: 3000000
     },
     fileFilter(req,file,cb){                                // check file type
         if(!file.originalname.match(/(\.jpg|\.jpeg|\.png)/)) // using regex to match file extension use online regex compiler
@@ -87,7 +90,8 @@ Route.get('/users',auth,async (req,res)=>{
 
 Route.get('/users/me',auth,async (req,res)=>{               // get profile of only loggedin user using jwt
 
-    res.send(req.user._id+"\n"+req.user.name)
+    const user=req.user.JSON()
+    res.send(user)
  
        // users.find({}).then((result)=>{
     //     res.send(result)
@@ -167,13 +171,23 @@ Route.delete('/users',auth,async (req,res)=>{
 // USER IMAGE ROUTES
 
 Route.get("/user/avatar/:id",async (req,res)=>{
-    const user=await users.findById(req.params.id)
-    res.set("Content-Type","image/jpg")
+    try
+{    const user=await users.findById(req.params.id)
+    if(!user)
+        throw new error("no image")
+    res.set("Content-Type","image/jpeg")
     res.send(user.avatar)
+}
+catch(e)
+{
+    res.status(500).send({error:e})
+}
 })
 
 Route.post("/users/me/avatar",auth,upload.single('avatar') /* 'avatar' parameter and form-data key at client side must be same */, async (req,res)=>{
-    req.user.avatar=req.file.buffer
+    const buffer=await sharp(req.file.buffer).jpeg().resize({width:250,height:250}).toBuffer()
+
+    req.user.avatar=buffer
     await req.user.save()
     res.send("file uploaded")
 },(err,req,res,next)=>{
@@ -189,6 +203,22 @@ try
 catch(e){
     res.status(500).send({error:e})
 }
+})
+
+Route.patch("/users/me/avatar",auth,upload.single('avatar'),async (req,res)=>{
+    try{
+        const buffer=await sharp(req.file.buffer).jpeg().resize({width:250,height:250}).toBuffer()
+        req.user.avatar=buffer
+        await req.user.save()
+        res.send("image updated")
+
+    }
+    catch(e)
+    {
+        res.status(500).send('ss')
+    }
+},(err,req,res,next)=>{
+    res.status(400).send({error:err.message})
 })
 
 module.exports=Route
