@@ -93,7 +93,6 @@ userSchema.methods.getPublicData=function(){
     var userw=this.toObject()                   //The toObject method is a method provided by Mongoose to clean up the object so it removes all of the metadata and methods (like .save() or .toObject()) that Mongoose attaches to it. It just becomes a regular object afterward. 
     delete userw.password
     delete userw.tokens
-    console.log(typeof userw)
     return userw
 }
 

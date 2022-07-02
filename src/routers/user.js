@@ -18,6 +18,8 @@ const upload = multer({
 
 })
 
+const email=require('../email/account')
+
 const Route=new express.Router()
 
 
@@ -26,7 +28,9 @@ Route.post('/users',async (req,res)=>{
    
     // same response using async-await
     try{
-    await first.save()                                                  // when save() methos used with model instance it creates new user
+        await first.save()                                                  // when save() methos used with model instance it creates new user
+        email.sendWelcomeEmail(first.email,first.name)
+        console.log("reached")
         const token=await first.generateAuthToken()
         res.send({user:first,token:token})
     }
@@ -49,14 +53,14 @@ Route.post('/users',async (req,res)=>{
 
 Route.post('/user/login',async (req,res)=>{
     try{
-    const user=await users.findByCredentials(req.body.email,req.body.password)
-    const token =await user.generateAuthToken()
+        const user=await users.findByCredentials(req.body.email,req.body.password)
+        const token = await user.generateAuthToken()
 
-    res.send({user:user.getPublicData(),token:token})
+        res.send({user:user.getPublicData(),token:token})
+
     }
     catch(e)
         {
-            console.log(e)
             res.status(500).send(e)
         }
         
@@ -160,6 +164,7 @@ Route.delete('/users',auth,async (req,res)=>{
         const user=await users.findByIdAndDelete(req.user._id)
         if(!user)
             return res.status(404).send({error:'user not found'})
+        email.sendDeleteEmail(user.email,user.name)
         res.send(user)
 
     }catch(e){
