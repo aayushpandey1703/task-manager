@@ -80,14 +80,14 @@ Route.post('/user/logout',auth, async (req,res)=>{
     }
 })
 
-Route.get('/users',auth,async (req,res)=>{
+Route.get('/users',async (req,res)=>{
     try{
-        const user=await users.find({}).sort({"updated_at":-1})
+        const user=await users.getPublicData()
         res.send(user)
 
     }
     catch(e){
-        res.status(503).send(e)
+        res.status(500).send(e)
 
     }
 })

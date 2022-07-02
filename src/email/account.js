@@ -1,4 +1,4 @@
-const mailjet = require('node-mailjet').connect("707fdd3a46bbfe99c421a7d2703dc1fc", "17fa75ac5374db61de78c81a62eb7be7")
+const mailjet = require('node-mailjet').connect(process.env.API_KEY, process.env.SECRET_KEY)
 
 const sendWelcomeEmail=(email,name)=>{
   const request = mailjet

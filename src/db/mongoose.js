@@ -1,7 +1,7 @@
 const mongoose=require('mongoose')
 // const validator=require('validator')
 
-mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api',{             //connect to mongodb database
+mongoose.connect(process.env.MONGODB_CONNECT,{             //connect to mongodb database
     useNewUrlParser:true,
 })
 

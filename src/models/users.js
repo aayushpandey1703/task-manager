@@ -83,7 +83,7 @@ userSchema.statics.findByCredentials=async (email,password)=>{      //function f
 
 userSchema.methods.generateAuthToken=async function(){         // function for model instance to store genrated token to db
     const userw=this
-    const token=jwt.sign({_id:userw._id.toString()},"newtoken")
+    const token=jwt.sign({_id:userw._id.toString()},process.env.JWT)
     userw.tokens=userw.tokens.concat({token:token})
     await userw.save()
     return token
@@ -94,6 +94,16 @@ userSchema.methods.getPublicData=function(){
     delete userw.password
     delete userw.tokens
     return userw
+}
+
+userSchema.statics.getPublicData=async ()=>{
+    var user=await users.find({}).sort({"updated_at":-1})
+    for(var i=0; i<user.length;i++)
+    {   
+        user[i]=user[i].toObject()
+        delete user[i].avatar
+    }
+    return user
 }
 
 // Hash plain text password to hashed password
