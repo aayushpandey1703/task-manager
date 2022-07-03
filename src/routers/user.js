@@ -17,7 +17,6 @@ const upload = multer({
     }
 
 })
-
 const email=require('../email/account')
 
 const Route=new express.Router()
